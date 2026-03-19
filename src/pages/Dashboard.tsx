@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { activities, volunteers } from '@/data/mockData';
+import { useCountUp } from '@/hooks/useCountUp';
 import { Clock, Users, Heart, CalendarDays, TrendingUp, Award, MapPin, Building2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from 'recharts';
 
@@ -30,11 +31,16 @@ const Dashboard: React.FC = () => {
   const totalBeneficiaries = activities.filter(a => a.status === 'completed').reduce((s, a) => s + a.beneficiaries, 0);
   const completedCount = activities.filter(a => a.status === 'completed').length;
 
+  const animatedHours = useCountUp(totalHours);
+  const animatedBeneficiaries = useCountUp(totalBeneficiaries);
+  const animatedActivities = useCountUp(activities.length);
+  const animatedParticipation = useCountUp(34);
+
   const stats = [
-    { label: 'Volunteer Hours (YTD)', value: totalHours.toLocaleString(), icon: <Clock size={22} />, color: 'bg-primary/10 text-primary' },
-    { label: 'Beneficiaries Reached', value: totalBeneficiaries.toLocaleString() + '+', icon: <Heart size={22} />, color: 'bg-destructive/10 text-destructive' },
-    { label: 'Activities This Year', value: activities.length.toString(), icon: <CalendarDays size={22} />, color: 'bg-info/10 text-info' },
-    { label: 'Student Participation', value: '34%', icon: <Users size={22} />, color: 'bg-success/10 text-success' },
+    { label: 'Volunteer Hours (YTD)', value: animatedHours.toLocaleString(), icon: <Clock size={22} />, color: 'bg-primary/10 text-primary' },
+    { label: 'Beneficiaries Reached', value: animatedBeneficiaries.toLocaleString() + '+', icon: <Heart size={22} />, color: 'bg-destructive/10 text-destructive' },
+    { label: 'Activities This Year', value: animatedActivities.toString(), icon: <CalendarDays size={22} />, color: 'bg-info/10 text-info' },
+    { label: 'Student Participation', value: animatedParticipation + '%', icon: <Users size={22} />, color: 'bg-success/10 text-success' },
   ];
 
   const recentActivities = [...activities].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);

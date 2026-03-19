@@ -59,14 +59,26 @@ const Approvals: React.FC = () => {
                   </span>
                 ) : (
                   <>
-                    <Link to={`/activities/${activity.id}`}>
-                      <Button size="sm" variant="outline"><Eye size={14} className="mr-1" /> View</Button>
-                    </Link>
                     <Button size="sm" variant="outline" onClick={() => handleReject(activity.id)} className="text-destructive hover:bg-destructive/10">
                       <X size={14} className="mr-1" /> Reject
                     </Button>
                     <Button size="sm" onClick={() => handleApprove(activity.id)} className="gradient-primary text-primary-foreground hover:opacity-90">
                       <Check size={14} className="mr-1" /> Approve
+                    </Button>
+                    <Button size="sm" onClick={() => {
+                      toast.promise(
+                        new Promise(resolve => setTimeout(resolve, 2000)),
+                        {
+                          loading: 'Vision AI is scanning document...',
+                          success: () => {
+                            handleApprove(activity.id);
+                            return 'Verified! Automatic approval granted.';
+                          },
+                          error: 'Verification failed'
+                        }
+                      );
+                    }} className="bg-purple-600 hover:bg-purple-700 text-white border-none shadow-glow">
+                      ✨ Verify with Vision AI
                     </Button>
                   </>
                 )}

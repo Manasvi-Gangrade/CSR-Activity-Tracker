@@ -1,14 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Users, Award, BookOpen, MapPin, Phone, Mail, Globe, ChevronDown, Send, Bot, User, Sparkles } from 'lucide-react';
+import { ArrowRight, Users, Award, BookOpen, MapPin, Phone, Mail, Globe, ChevronDown, Send, Bot, User, Sparkles, MessageSquare, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import iistLogos from '@/assets/iist-logos.png';
 import iistBanner from '@/assets/iist-campus-banner.png';
+import iistAdvisor from '@/assets/iist-advisor.png';
 import iistCampus1 from '@/assets/iist-campus-1.png';
 import iistCampus2 from '@/assets/iist-campus-2.png';
-import iistAdvisor from '@/assets/iist-advisor.png';
 import iistCampus3 from '@/assets/iist-campus-3.png';
+import { useTTS, GoogleTranslateWidget } from '@/components/AIAccessibility';
+
+import img1 from '@/assets/img1.jpg';
+import img2 from '@/assets/img2.jpg';
+import img3 from '@/assets/img3.jpg';
+import img4 from '@/assets/img4.jpg';
+import img5 from '@/assets/img5.jpg';
+import img6 from '@/assets/img6.jpg';
+import img7 from '@/assets/img7.jpg';
+import AIAgents from './AIAgents';
 
 const stats = [
   { value: '2,847+', label: 'Volunteer Hours', icon: Users },
@@ -106,85 +116,95 @@ const HomePage: React.FC = () => {
     }, 1200);
   };
 
+  const { ttsEnabled, setTtsEnabled } = useTTS();
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative selection:bg-primary/20">
       {/* Top bar */}
-      <header className="sticky top-0 z-50 bg-card/90 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-4">
-            <img src={iistLogos} alt="IIST IIP IIMR Logos" className="h-10 md:h-14 object-contain" />
+      <header className="sticky top-0 z-50 bg-card/90 backdrop-blur-md border-b border-border shadow-sm">
+        <div className="max-w-7xl mx-auto flex flex-wrap lg:grid lg:grid-cols-3 items-center justify-between px-4 py-3 gap-y-3 min-h-[60px]">
+          {/* Logo - Left */}
+          <div className="flex justify-start z-10 w-full lg:w-auto">
+            <img src={iistLogos} alt="IIST IIP IIMR Logos" className="h-10 md:h-12 object-contain" />
           </div>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-            <a href="#about" className="hover:text-foreground transition-colors">About</a>
-            <a href="#chat" className="hover:text-foreground transition-colors">AI Assistant</a>
-            <a href="#faculty" className="hover:text-foreground transition-colors">Faculty</a>
-            <a href="#departments" className="hover:text-foreground transition-colors">Departments</a>
-            <a href="#contact" className="hover:text-foreground transition-colors">Contact</a>
+          
+          {/* Accessibility & Translation - Center */}
+          <div className="hidden lg:flex justify-center flex-row items-center gap-4 z-0">
+            <button 
+              onClick={() => setTtsEnabled(!ttsEnabled)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full shadow-sm border transition-colors ${ttsEnabled ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-muted border-border text-muted-foreground'}`}
+              title="Toggle Hover-to-Speak"
+            >
+              {ttsEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+              <span className="text-xs font-bold uppercase tracking-wider">{ttsEnabled ? 'Voice On' : 'Voice Off'}</span>
+            </button>
+            <div className="bg-muted/50 rounded-full px-2 py-1 shadow-sm border border-border">
+              <GoogleTranslateWidget />
+            </div>
+          </div>
+
+          {/* Navigation - Right */}
+          <nav className="flex justify-end items-center w-full lg:w-auto gap-2 md:gap-3 text-xs md:text-sm font-bold z-10 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
+            <a href="#about" className="px-3 md:px-4 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors shadow-sm whitespace-nowrap">About</a>
+            <a href="#chat" className="px-3 md:px-4 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors shadow-sm whitespace-nowrap">AI Assistant</a>
+            <a href="#faculty" className="px-3 md:px-4 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors shadow-sm whitespace-nowrap">Faculty</a>
+            <a href="#departments" className="px-3 md:px-4 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors shadow-sm whitespace-nowrap">Departments</a>
+            <a href="#contact" className="px-3 md:px-4 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors shadow-sm whitespace-nowrap">Contact</a>
           </nav>
-          <Link to="/login">
-            <Button className="gradient-primary text-primary-foreground hover:opacity-90 text-sm">
-              Login <ArrowRight size={16} className="ml-1" />
-            </Button>
-          </Link>
         </div>
       </header>
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0">
-          <img src={iistBanner} alt="IIST Campus" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-foreground/70 via-foreground/50 to-background" />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32 text-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 pt-12 pb-8 md:pt-16 md:pb-12 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <h1 className="font-display text-3xl md:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-tight mb-4">
+            {/* Time & Weather - Re-located to Hero */}
+            <div className="flex justify-center flex-wrap items-center gap-2 md:gap-3 text-sm font-semibold mb-6">
+              <div className="flex items-center gap-2 px-4 py-1.5 bg-accent/20 border border-accent/20 text-accent-foreground rounded-full shadow-sm whitespace-nowrap backdrop-blur-sm">
+                <span className="text-lg leading-none">☀️</span> <span>28°C Indore</span>
+              </div>
+              <div className="flex items-center gap-2 px-5 py-1.5 bg-primary/10 border border-primary/20 text-primary rounded-full shadow-sm font-mono tracking-wide whitespace-nowrap backdrop-blur-sm">
+                <span>{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+            </div>
+
+            <h1 className="font-display text-2xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight mb-4 tracking-tight">
               Indore Institute of Science & Technology
             </h1>
-            <p className="text-primary-foreground/80 text-lg md:text-xl max-w-2xl mx-auto mb-2">
-              CSR Activity Tracker — Document & Report Community Service Activities
+            <p className="text-foreground/80 text-xl md:text-2xl font-medium max-w-2xl mx-auto mb-3">
+              AI-Powered CSR Activity Tracker
             </p>
-            <p className="text-primary-foreground/60 text-sm md:text-base max-w-xl mx-auto mb-8">
-              For NAAC / NBA Accreditation Evidence • NAAC A+ Accredited
+            <p className="text-muted-foreground text-base max-w-xl mx-auto mb-8">
+              Smart Documentation, Analytics & Reporting Agent for NAAC/NBA Compliance
             </p>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            <Link to="/login">
-              <Button size="lg" className="gradient-primary text-primary-foreground shadow-glow hover:opacity-90">
-                Go to Dashboard <ArrowRight size={18} className="ml-2" />
-              </Button>
-            </Link>
-            <a href="#chat">
-              <Button size="lg" variant="outline" className="bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-sm">
-                Ask AI Assistant <ChevronDown size={18} className="ml-2" />
-              </Button>
-            </a>
+          {/* Moving Image Gallery (NSS Activities Placeholder) */}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="relative w-full max-w-7xl mx-auto mt-12 overflow-hidden h-36 md:h-48">
+            <div className="flex animate-marquee gap-3 md:gap-4 absolute left-0 pr-4" style={{ width: 'max-content' }}>
+               {[img1, img2, img3, img4, img5, img6, img7, img1, img2, img3, img4, img5].map((imgSrc, i) => (
+                 <div key={i} className="w-56 md:w-72 h-36 md:h-48 flex-shrink-0 rounded-2xl overflow-hidden border border-border/50 shadow-sm relative group">
+                   <img src={imgSrc} alt="Activity Gallery" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                   <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
+                 </div>
+               ))}
+            </div>
+            {/* Smooth Edge Masks */}
+            <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
           </motion.div>
-        </div>
-      </section>
 
-      {/* Stats */}
-      <section className="max-w-7xl mx-auto px-4 -mt-12 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + i * 0.1 }}
-              className="bg-card rounded-xl p-5 border border-border shadow-md text-center"
-            >
-              <stat.icon className="mx-auto text-primary mb-2" size={28} />
-              <p className="font-display text-2xl font-bold text-foreground">{stat.value}</p>
-              <p className="text-muted-foreground text-xs mt-1">{stat.label}</p>
-            </motion.div>
-          ))}
         </div>
       </section>
 
       {/* About */}
-      <section id="about" className="max-w-7xl mx-auto px-4 py-16">
+      <section id="about" className="max-w-7xl mx-auto px-4 py-16 relative z-10">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h2 className="font-display text-3xl font-bold text-foreground mb-4">About IIST</h2>
@@ -204,12 +224,61 @@ const HomePage: React.FC = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <img src={iistCampus1} alt="IIST Campus Aerial View" className="rounded-xl object-cover w-full h-40 border border-border" />
-            <img src={iistCampus2} alt="IIST Campus Ground" className="rounded-xl object-cover w-full h-40 border border-border" />
-            <img src={iistAdvisor} alt="Shri Arun S Bhatnagar IRS, Group Advisor" className="rounded-xl object-cover w-full h-40 border border-border col-span-1" />
-            <img src={iistCampus3} alt="IIST Campus Road" className="rounded-xl object-cover w-full h-40 border border-border col-span-1" />
+            <img src={iistCampus1} alt="IIST Campus Aerial View" className="rounded-xl object-cover w-full h-40 border border-border shadow-sm" />
+            <img src={iistCampus2} alt="IIST Campus Ground" className="rounded-xl object-cover w-full h-40 border border-border shadow-sm" />
+            <img src={iistAdvisor} alt="Shri Arun S Bhatnagar IRS, Group Advisor" className="rounded-xl object-cover w-full h-40 border border-border shadow-sm col-span-1" />
+            <img src={iistCampus3} alt="IIST Campus Road" className="rounded-xl object-cover w-full h-40 border border-border shadow-sm col-span-1" />
           </div>
         </div>
+      </section>
+
+      {/* Stats */}
+      <section className="max-w-7xl mx-auto px-4 pb-12 relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {stats.map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.1 }}
+              className="bg-card rounded-xl p-5 border border-border shadow-md text-center"
+            >
+              <stat.icon className="mx-auto text-primary mb-2" size={28} />
+              <p className="font-display text-2xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-muted-foreground text-xs mt-1">{stat.label}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Quick Login Portals */}
+      <section className="max-w-7xl mx-auto px-4 pb-16 relative z-10 cursor-pointer">
+        <motion.div 
+           initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+           className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto"
+        >
+          {[
+            { role: 'Admin', desc: 'Manage CSR System', icon: Users, theme: 'bg-primary text-primary-foreground border-primary shadow-primary/20' },
+            { role: 'NAAC Coordinator', desc: 'Automated Reports', icon: Award, theme: 'bg-[#FFB800] text-[#4A3400] border-[#FFB800] shadow-[#FFB800]/20' },
+            { role: 'Faculty', desc: 'Approve Volunteer Hours', icon: BookOpen, theme: 'bg-primary text-primary-foreground border-primary shadow-primary/20' },
+            { role: 'Student', desc: 'Log CSR Activities', icon: User, theme: 'bg-[#FFB800] text-[#4A3400] border-[#FFB800] shadow-[#FFB800]/20' },
+          ].map((tab, i) => (
+            <div key={i} className="group block text-left" onClick={() => window.location.href = '/login'}>
+              <div className={`${tab.theme} rounded-2xl p-6 border-2 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 h-full w-full`}>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2.5 rounded-xl bg-white/20 text-inherit backdrop-blur-sm shadow-sm">
+                    <tab.icon size={20} strokeWidth={2.5} />
+                  </div>
+                  <h3 className="font-display font-bold text-[17px] tracking-tight">
+                    {tab.role}
+                  </h3>
+                </div>
+                <p className="text-[14px] font-semibold opacity-90 leading-snug group-hover:opacity-100 transition-opacity">
+                  {tab.desc} <span className="inline-block transition-transform duration-300 group-hover:translate-x-1 font-bold ml-1">&rarr;</span>
+                </p>
+              </div>
+            </div>
+          ))}
+        </motion.div>
       </section>
 
       {/* AI Chat Section */}
@@ -218,9 +287,6 @@ const HomePage: React.FC = () => {
         <div className="relative max-w-4xl mx-auto px-4">
           <div className="text-center mb-10">
             <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase mb-4">
-                <Sparkles size={14} /> Powered by AI
-              </span>
               <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">AI Assistant</h2>
               <p className="text-muted-foreground max-w-lg mx-auto">
                 Ask questions about CSR activities, NAAC criteria, or get instant analytics
@@ -347,6 +413,25 @@ const HomePage: React.FC = () => {
           </motion.div>
         </div>
       </section>
+      {/* Embedded AI Control Center (Moved from Hero) */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+          <div className="text-center mb-10 md:px-4">
+            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-accent/20 text-accent-foreground text-sm font-bold uppercase tracking-wider mb-4 border border-accent/30 shadow-sm">
+              Our Core Architecture
+            </span>
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground tracking-tight">
+              Meet the Autonomous AI Ensemble
+            </h2>
+            <p className="text-muted-foreground mt-4 max-w-2xl mx-auto text-lg">
+              These 7 specialized AI Agents work continuously in the background to ensure 100% NAAC/NBA compliance without any manual faculty overhead.
+            </p>
+          </div>
+          <div className="bg-transparent md:p-2 border-transparent">
+            <AIAgents />
+          </div>
+        </motion.div>
+      </section>
 
       {/* Faculty */}
       <section id="faculty" className="bg-muted/30 py-16">
@@ -422,6 +507,16 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Floating Help Chatbot */}
+      <a href="#chat" className="fixed bottom-6 right-6 z-50 group">
+        <div className="w-14 h-14 rounded-full bg-accent text-accent-foreground shadow-2xl flex items-center justify-center hover:scale-110 transition-transform border-[3px] border-white/40 cursor-pointer overflow-hidden relative">
+          <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <MessageSquare size={26} strokeWidth={2.5} className="mt-0.5 mr-0.5 relative z-10 drop-shadow-sm" />
+          <span className="absolute top-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-accent" />
+        </div>
+      </a>
+
     </div>
   );
 };

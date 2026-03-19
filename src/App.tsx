@@ -5,10 +5,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import AppLayout from "./components/AppLayout";
+import { TTSProvider } from "./components/AIAccessibility";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import StudentDashboard from "./pages/StudentDashboard";
+import FacultyDashboard from "./pages/FacultyDashboard";
+import NAACDashboard from "./pages/NAACDashboard";
 import Activities from "./pages/Activities";
 import ActivityDetail from "./pages/ActivityDetail";
 import CreateActivity from "./pages/CreateActivity";
@@ -18,6 +21,7 @@ import Approvals from "./pages/Approvals";
 import Certificates from "./pages/Certificates";
 import HeatMap from "./pages/HeatMap";
 import SettingsPage from "./pages/SettingsPage";
+import AIAgents from "./pages/AIAgents";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +35,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const DashboardRouter: React.FC = () => {
   const { user } = useAuth();
   if (user?.role === 'student') return <StudentDashboard />;
+  if (user?.role === 'faculty') return <FacultyDashboard />;
+  if (user?.role === 'naac_coordinator') return <NAACDashboard />;
   return <Dashboard />;
 };
 
@@ -49,6 +55,7 @@ const AppRoutes = () => {
       <Route path="/approvals" element={<ProtectedRoute><Approvals /></ProtectedRoute>} />
       <Route path="/certificates" element={<ProtectedRoute><Certificates /></ProtectedRoute>} />
       <Route path="/heat-map" element={<ProtectedRoute><HeatMap /></ProtectedRoute>} />
+      <Route path="/ai-agents" element={<ProtectedRoute><AIAgents /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
@@ -62,7 +69,9 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <AppRoutes />
+          <TTSProvider>
+            <AppRoutes />
+          </TTSProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

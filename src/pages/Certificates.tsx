@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { volunteers } from '@/data/mockData';
-import { Award, Download, Eye, Palette, Search, X } from 'lucide-react';
+import { Award, Download, Eye, Palette, Search, X, Share2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -185,12 +185,15 @@ const Certificates: React.FC = () => {
             <div className="flex items-center justify-between text-xs mb-3">
               <span className="text-muted-foreground">{v.totalHours} hours · {v.activitiesCount} activities</span>
             </div>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" className="flex-1 text-xs" onClick={() => setPreviewVolunteer(v)}>
-                <Eye size={12} className="mr-1" />Preview
+            <div className="flex gap-1 sm:gap-2">
+              <Button size="sm" variant="outline" className="flex-1 text-[10px] sm:text-xs px-2" onClick={() => setPreviewVolunteer(v)}>
+                <Eye size={12} className="mr-1 hidden sm:block" />Preview
               </Button>
-              <Button size="sm" className="flex-1 text-xs" onClick={() => toast.success(`Certificate downloaded for ${v.name}`)}>
-                <Download size={12} className="mr-1" />Download
+              <Button size="sm" className="flex-1 text-[10px] sm:text-xs px-2" onClick={() => toast.success(`Certificate downloaded for ${v.name}`)}>
+                <Download size={12} className="mr-1 hidden sm:block" />DL
+              </Button>
+              <Button size="sm" onClick={() => window.open(`https://wa.me/?text=Hi ${v.name}, congratulations on completing ${v.totalHours} volunteer hours! Download your certificate from the dashboard. 🏆`, '_blank')} className="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 shrink-0">
+                <Share2 size={14} />
               </Button>
             </div>
           </motion.div>
